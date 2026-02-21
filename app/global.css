@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* If you write manual CSS classes here, I will judge you. 
+  Let Tailwind do its job. 
+*/
+
+body {
+  /* This ensures the soft cream background and dark text apply everywhere by default */
+  @apply bg-cream text-gray-900; 
+}
