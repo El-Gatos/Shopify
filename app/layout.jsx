@@ -1,7 +1,7 @@
-import './globals.css';
+import './global.css';
 import { Inter } from 'next/font/google';
-import Navbar from '../components/Navbar'; // <-- 1. Import it here
-import { CartProvider } from '../components/CartProvider'; // <-- Import the provider
+import Navbar from '../components/Navbar';
+import { CartProvider } from '../components/CartProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -14,19 +14,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} antialiased selection:bg-matcha selection:text-matcha-dark`}>
+        {/* The global cart state wraps the entire app */}
         <CartProvider>
+          {/* Only ONE Navbar */}
           <Navbar />
+          
+          {/* Only ONE main tag, properly spaced so the navbar doesn't cover it */}
           <main className="min-h-screen pt-20">
             {children}
           </main>
         </CartProvider>
-        <Navbar />
-        
-        {/* 3. Add pt-20 here so your content doesn't hide under the sticky navbar */}
-        <main className="min-h-screen pt-20">
-          {children}
-        </main>
-        
       </body>
     </html>
   );

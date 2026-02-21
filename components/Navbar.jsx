@@ -1,14 +1,19 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import CartSidebar from './CartSidebar'; // Pull in the new component
-import { useCart } from './CartProvider'; // Pull in the cart context
+import CartSidebar from './CartSidebar';
+import { useCart } from './CartProvider';
 
 export default function Navbar() {
-  // State to control the cart
-  const { setIsCartOpen } = useCart();
+  // Pulling the cart data straight from the global brain
+  const { setIsCartOpen, cart } = useCart();
+
+  // Reduce the array of cart items to get the total quantity
+  // If the cart is null or empty, it defaults to 0
+  const totalQuantity = cart?.lines?.edges?.reduce((total, item) => {
+    return total + item.node.quantity;
+  }, 0) || 0;
 
   return (
     <>
@@ -27,18 +32,31 @@ export default function Navbar() {
           <Link href="/about" className="hover:text-matcha-dark transition-colors">The Vibe</Link>
         </div>
 
-        {/* Change this to a button that updates the state */}
         <button 
           onClick={() => setIsCartOpen(true)}
           className="flex items-center gap-2 bg-matcha-light hover:bg-matcha text-matcha-dark px-5 py-2.5 rounded-full font-semibold transition-colors shadow-sm active:scale-95"
         >
           <span>Cart</span>
-          <span className="bg-white text-xs px-2 py-0.5 rounded-full shadow-sm text-gray-800">0</span>
+          
+          {/* The 'key' prop tells Framer Motion to re-run the animation 
+            every time the totalQuantity changes. 
+          */}
+          <motion.span 
+            key={totalQuantity}
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            className="bg-white text-xs px-2 py-0.5 rounded-full shadow-sm text-gray-800"
+          >
+            {totalQuantity}
+          </motion.span>
         </button>
       </motion.nav>
 
-      {/* Drop the sidebar component right next to the nav */}
-      <CartSidebar isOpen={isCartOpen} closeCart={() => setIsCartOpen(false)} />
+      {/* Sidebar doesn't need props anymore since it reads directly from useCart().
+        Just drop it in. 
+      */}
+      <CartSidebar />
     </>
   );
 }
