@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import CartSidebar from './CartSidebar';
 import { useCart } from './CartProvider';
@@ -23,8 +24,14 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-cream/80 backdrop-blur-md border-b border-matcha-light"
       >
-        <Link href="/" className="text-2xl font-bold text-matcha-dark tracking-tighter">
-          MATCHA.
+        <Link href="/" className="flex items-center">
+          <Image 
+            src="/logo.png" 
+            alt=" Urban Utensil Logo" 
+            width={320} 
+            height={110}
+            className="w-auto h-20 md:h-28 transition-transform duration-300 group-hover:scale-105"
+          />
         </Link>
 
         <div className="hidden md:flex gap-8 text-sm font-medium text-gray-700">

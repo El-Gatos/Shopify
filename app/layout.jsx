@@ -2,6 +2,7 @@ import './global.css';
 import { Inter } from 'next/font/google';
 import Navbar from '../components/Navbar';
 import { CartProvider } from '../components/CartProvider';
+import FlyingItem from '@/components/FlyingItem';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,9 +19,9 @@ export default function RootLayout({ children }) {
         <CartProvider>
           {/* Only ONE Navbar */}
           <Navbar />
-          
+          <FlyingItem />
           {/* Only ONE main tag, properly spaced so the navbar doesn't cover it */}
-          <main className="min-h-screen pt-20">
+          <main className="min-h-screen pt-40">
             {children}
           </main>
         </CartProvider>
