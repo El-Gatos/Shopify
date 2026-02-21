@@ -29,7 +29,8 @@ export default function Navbar() {
 
         <div className="hidden md:flex gap-8 text-sm font-medium text-gray-700">
           <Link href="/shop" className="hover:text-matcha-dark transition-colors">Shop All</Link>
-          <Link href="/about" className="hover:text-matcha-dark transition-colors">The Vibe</Link>
+          <Link href="/about" className="hover:text-matcha-dark transition-colors">About</Link>
+          <Link href="/support" className="hover:text-matcha-dark transition-colors">Orders & Support</Link>
         </div>
 
         <button 
