@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MESSAGES = [
-  { text: 'Free shipping on orders over $50', emoji: '🚚' },
+  { text: 'Free shipping!', emoji: '🚚' },
   { text: '30-day hassle-free returns', emoji: '🌱' },
   { text: 'New arrivals added weekly', emoji: '✨' },
 ];

@@ -75,9 +75,8 @@ export default function Footer() {
   // ✏️ FILL IN YOUR HANDLES BELOW
   // To remove a platform entirely, just delete its line
   const socials = [
-    { href: 'https://instagram.com/YOUR_HANDLE', label: 'Instagram', Icon: InstagramIcon },
-    { href: 'https://tiktok.com/@YOUR_HANDLE', label: 'TikTok', Icon: TikTokIcon },
-    { href: 'https://pinterest.com/YOUR_HANDLE', label: 'Pinterest', Icon: PinterestIcon },
+    { href: 'https://instagram.com/urbanutensil', label: 'Instagram', Icon: InstagramIcon },
+    { href: 'https://tiktok.com/@urban.utensil', label: 'TikTok', Icon: TikTokIcon },
   ];
 
   return (

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block account and API routes from indexing
+Disallow: /account/
+Disallow: /api/
+
+Sitemap: https://urbanutensil.shop/sitemap.xml
