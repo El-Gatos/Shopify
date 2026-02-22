@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { getProductsWithTypes } from '@/lib/shopify';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://urbanutensil.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://urbanutensil.shop';
 
 export default async function sitemap() {
   const products = await getProductsWithTypes();
