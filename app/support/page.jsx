@@ -1,23 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-
-const shopDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
+import Link from 'next/link';
 
 export default function SupportPage() {
-  const [orderNumber, setOrderNumber] = useState('');
-
-  const handleTrack = () => {
-    if (!orderNumber.trim()) return;
-    // Strips any leading # the user might type
-    const clean = orderNumber.replace(/^#/, '').trim();
-    window.open(`https://${shopDomain}/account`, '_blank');
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') handleTrack();
-  };
-
   return (
     <div className="max-w-4xl mx-auto px-6 py-20">
       <h1 className="text-4xl font-bold text-matcha-dark mb-12">How can we help?</h1>
@@ -26,34 +11,26 @@ export default function SupportPage() {
         <div>
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">Track Order</h2>
           <p className="text-gray-600 mb-6">
-            Enter your order number from your confirmation email, or log in to your account to see all your orders.
+            Log in to your account to view your complete order history and track current shipments.
           </p>
-          <input
-            type="text"
-            value={orderNumber}
-            onChange={(e) => setOrderNumber(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Order #1234"
-            className="w-full p-4 rounded-xl border border-matcha-light bg-white mb-4 focus:outline-none focus:ring-2 focus:ring-matcha-dark/30"
-          />
-          <button
-            onClick={handleTrack}
+          
+          <Link
+            href="/account"
             style={{
-              background: orderNumber.trim() ? '#7e994e' : '#d1d5db',
-              color: orderNumber.trim() ? 'white' : '#9ca3af',
+              display: 'inline-block',
+              background: '#7e994e',
+              color: 'white',
               padding: '12px 32px',
               borderRadius: 9999,
               fontWeight: 700,
-              border: 'none',
-              cursor: orderNumber.trim() ? 'pointer' : 'not-allowed',
+              textDecoration: 'none',
               transition: 'background 0.2s',
             }}
+            onMouseEnter={e => e.currentTarget.style.background = '#657a3e'}
+            onMouseLeave={e => e.currentTarget.style.background = '#7e994e'}
           >
-            Track Order
-          </button>
-          <p className="text-xs text-gray-400 mt-3">
-            You'll be taken to your Shopify account where you can view your order status.
-          </p>
+            Log in to your Account
+          </Link>
         </div>
 
         <div>
