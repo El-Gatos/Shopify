@@ -58,7 +58,7 @@ export default function SupportPage() {
 
         <div>
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">Contact Us</h2>
-          <p className="text-gray-600 mb-2">Email: support@urbanutensil.com</p>
+          <p className="text-gray-600 mb-2">Email: urbanutensil@outlook.com</p>
           <p className="text-gray-600">Hours: Mon–Fri, 9am–5pm PST</p>
         </div>
       </div>

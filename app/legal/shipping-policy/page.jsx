@@ -38,13 +38,13 @@ export default function ShippingPolicy() {
         <Ul items={[
           'Check around your property and with neighbours',
           'Allow 24–48 hours as carriers sometimes mark items delivered early',
-          'Contact us at support@urbanutensil.com if the issue persists',
+          'Contact us at urbanutensil@outlook.com if the issue persists',
         ]} />
         <P>Urban Utensil is not responsible for delays caused by carriers, weather events, or customs processing beyond our control.</P>
       </Section>
 
       <Section title="Contact">
-        <P>For shipping enquiries, reach us at support@urbanutensil.com. Please include your order number for fastest service.</P>
+        <P>For shipping enquiries, reach us at urbanutensil@outlook.com. Please include your order number for fastest service.</P>
       </Section>
 
     </LegalLayout>

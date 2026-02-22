@@ -46,7 +46,7 @@ export default function TermsOfService() {
       </Section>
 
       <Section title="8. Contact">
-        <P>Questions about these Terms? Reach us at support@urbanutensil.com.</P>
+        <P>Questions about these Terms? Reach us at urbanutensil@outlook.com.</P>
       </Section>
 
     </LegalLayout>

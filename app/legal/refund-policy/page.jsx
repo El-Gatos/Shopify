@@ -22,7 +22,7 @@ export default function RefundPolicy() {
 
       <Section title="How to Start a Return">
         <Ul items={[
-          'Email us at support@urbanutensil.com with your order number and reason for return',
+          'Email us at urbanutensil@outlook.com with your order number and reason for return',
           'We\'ll respond within 1–2 business days with return instructions',
           'Ship the item back using a trackable shipping method',
           'Once received and inspected, your refund will be processed within 5–7 business days',
@@ -43,7 +43,7 @@ export default function RefundPolicy() {
       </Section>
 
       <Section title="Contact">
-        <P>Questions? Email us at support@urbanutensil.com — we typically respond within one business day.</P>
+        <P>Questions? Email us at urbanutensil@outlook.com — we typically respond within one business day.</P>
       </Section>
 
     </LegalLayout>

@@ -59,7 +59,7 @@ export default function PrivacyPolicy() {
       </Section>
 
       <Section title="7. Contact Us">
-        <P>If you have any questions about this Privacy Policy, please contact us at support@urbanutensil.com.</P>
+        <P>If you have any questions about this Privacy Policy, please contact us at urbanutensil@outlook.com.</P>
       </Section>
 
     </LegalLayout>
