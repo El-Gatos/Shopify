@@ -3,7 +3,7 @@ import {
   createCartAndAdd, updateCartQuantity, removeFromCart, getCart,
   searchProducts, getProductsWithTypes,
   customerCreate, customerAccessTokenCreate, customerAccessTokenDelete,
-  getCustomer, customerUpdate,
+  getCustomer, customerUpdate, getCustomerOrders, customerRecover,
 } from '@/lib/shopify';
 
 export async function getCartAction(cartId) { return await getCart(cartId); }
@@ -15,20 +15,10 @@ export async function searchProductsAction(query) {
   return await searchProducts(query);
 }
 export async function getProductsWithTypesAction() { return await getProductsWithTypes(); }
-
-// Customer actions
-export async function registerAction({ firstName, lastName, email, password }) {
-  return await customerCreate({ firstName, lastName, email, password });
-}
-export async function loginAction({ email, password }) {
-  return await customerAccessTokenCreate({ email, password });
-}
-export async function logoutAction(accessToken) {
-  return await customerAccessTokenDelete(accessToken);
-}
-export async function getCustomerAction(accessToken) {
-  return await getCustomer(accessToken);
-}
-export async function updateCustomerAction(accessToken, customer) {
-  return await customerUpdate(accessToken, customer);
-}
+export async function registerAction({ firstName, lastName, email, password }) { return await customerCreate({ firstName, lastName, email, password }); }
+export async function loginAction({ email, password }) { return await customerAccessTokenCreate({ email, password }); }
+export async function logoutAction(accessToken) { return await customerAccessTokenDelete(accessToken); }
+export async function getCustomerAction(accessToken) { return await getCustomer(accessToken); }
+export async function updateCustomerAction(accessToken, customer) { return await customerUpdate(accessToken, customer); }
+export async function getCustomerOrdersAction(accessToken) { return await getCustomerOrders(accessToken); }
+export async function customerRecoverAction(email) { return await customerRecover(email); }

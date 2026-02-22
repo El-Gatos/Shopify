@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { loginAction, getCustomerAction } from '@/app/actions';
-import { useAccount } from '@/components/AccountProvider';
+import { loginAction, getCustomerAction } from '../../../app/actions';
+import { useAccount } from '../../../components/AccountProvider';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -25,8 +25,9 @@ export default function LoginPage() {
         return;
       }
       const token = result.customerAccessToken.accessToken;
+      const expiresAt = result.customerAccessToken.expiresAt;
       const customer = await getCustomerAction(token);
-      login(token, customer);
+      login(token, customer, expiresAt);
       router.push('/account');
     } catch {
       setError('Something went wrong. Please try again.');
@@ -66,7 +67,12 @@ export default function LoginPage() {
             </div>
 
             <div style={{ marginBottom: 28 }}>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>Password</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: '#374151' }}>Password</label>
+                <Link href="/account/forgot-password" style={{ fontSize: 12, color: '#7e994e', fontWeight: 600, textDecoration: 'none' }}>
+                  Forgot password?
+                </Link>
+              </div>
               <input
                 type="password" required
                 value={form.password}

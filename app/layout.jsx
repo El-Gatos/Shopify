@@ -1,6 +1,6 @@
 import './global.css';
 import { Inter } from 'next/font/google';
-import Navbar from '../components/Navbar';
+import SiteHeader from '../components/SiteHeader';
 import Footer from '../components/Footer';
 import { CartProvider } from '../components/CartProvider';
 import { AccountProvider } from '../components/AccountProvider';
@@ -32,12 +32,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`} style={{ background: '#fdfdfc', color: '#111827' }}>
+      <body className={`${inter.className} antialiased`} style={{ background: '#fdfdfc', color: '#111827' }} suppressHydrationWarning>
         <AccountProvider>
           <CartProvider>
-            <Navbar />
+            <SiteHeader />
             <FlyingItem />
-            <main style={{ minHeight: '100vh', paddingTop: 140 }}>
+            <main style={{ minHeight: '100vh', paddingTop: 'var(--header-height, 158px)' }}>
               {children}
             </main>
             <Footer />

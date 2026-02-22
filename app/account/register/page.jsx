@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { registerAction, loginAction, getCustomerAction } from '@/app/actions';
-import { useAccount } from '@/components/AccountProvider';
+import { registerAction, loginAction, getCustomerAction } from '../../../app/actions';
+import { useAccount } from '../../../components/AccountProvider';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -28,8 +28,9 @@ export default function RegisterPage() {
       // Auto-login after register
       const tokenResult = await loginAction({ email: form.email, password: form.password });
       const token = tokenResult.customerAccessToken.accessToken;
+      const expiresAt = tokenResult.customerAccessToken.expiresAt;
       const customer = await getCustomerAction(token);
-      login(token, customer);
+      login(token, customer, expiresAt);
       router.push('/account');
     } catch {
       setError('Something went wrong. Please try again.');

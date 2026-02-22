@@ -195,7 +195,7 @@ export default function Footer() {
         {/* Divider */}
         <div className="border-t border-matcha/30 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
           <span>© {new Date().getFullYear()} Urban Utensil. All rights reserved.</span>
-          <span className="italic">Made for kitchens that actually look good.</span>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}><Link href="/legal/privacy-policy" className="hover:text-matcha-dark transition-colors">Privacy Policy</Link><Link href="/legal/terms" className="hover:text-matcha-dark transition-colors">Terms of Service</Link><Link href="/legal/refund-policy" className="hover:text-matcha-dark transition-colors">Refund Policy</Link><Link href="/legal/shipping-policy" className="hover:text-matcha-dark transition-colors">Shipping Policy</Link></div>
         </div>
 
       </div>

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import ShopClient from './ShopClient';
 import { getProductsWithTypes } from '@/lib/shopify';
 

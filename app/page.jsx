@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Hero from '../components/Hero';
 import TrustBar from '../components/TrustBar';
 import ProductGrid from '../components/ProductGrid';

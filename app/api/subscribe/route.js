@@ -1,72 +1,94 @@
-// app/api/subscribe/route.js
 import { NextResponse } from 'next/server';
 
-export async function POST(request) {
-  const { email } = await request.json();
+const domain = process.env.SHOPIFY_STORE_DOMAIN;
+const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+const endpoint = `https://${domain}/api/2024-01/graphql.json`;
 
-  if (!email || !email.includes('@')) {
+// Simple in-memory rate limiter — max 3 attempts per IP per 10 minutes
+const rateLimitMap = new Map();
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_ATTEMPTS = 3;
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.windowStart > WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, windowStart: now });
+    return false;
+  }
+  if (entry.count >= MAX_ATTEMPTS) return true;
+  entry.count++;
+  return false;
+}
+
+async function shopifyPost(query, variables) {
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': token,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+  return res.json();
+}
+
+export async function POST(request) {
+  // Rate limiting
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
+  }
+
+  const body = await request.json().catch(() => null);
+  const email = body?.email?.trim();
+
+  // Stricter email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email) || email.length > 254) {
     return NextResponse.json({ error: 'Valid email required.' }, { status: 400 });
   }
 
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-  const endpoint = `https://${domain}/api/2024-01/graphql.json`;
-
-  // Uses the Storefront API to create a customer with marketing opt-in.
-  // If they already exist, Shopify returns a CUSTOMER_ALREADY_USED_EMAIL error —
-  // we treat that as a success so it doesn't feel like an error to the user.
-  const query = `
-    mutation customerCreate($input: CustomerCreateInput!) {
-      customerCreate(input: $input) {
-        customer {
-          id
-          email
-          acceptsMarketing
-        }
-        customerUserErrors {
-          code
-          field
-          message
-        }
-      }
-    }
-  `;
-
-  const variables = {
-    input: {
-      email,
-      acceptsMarketing: true,
-      // A placeholder password is required by the mutation.
-      // The customer won't be able to log in without resetting it — that's fine for newsletter-only signups.
-      password: `Signup_${Math.random().toString(36).slice(2, 10)}!`,
-    },
-  };
-
   try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Storefront-Access-Token': token,
-      },
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const data = await response.json();
-    const errors = data?.data?.customerCreate?.customerUserErrors;
-
-    // CUSTOMER_ALREADY_USED_EMAIL means they're already in Shopify — still a "success" UX-wise
-    if (errors?.length > 0) {
-      const alreadyExists = errors.some((e) => e.code === 'CUSTOMER_ALREADY_USED_EMAIL');
-      if (alreadyExists) {
-        return NextResponse.json({ success: true });
+    const createData = await shopifyPost(
+      `mutation customerCreate($input: CustomerCreateInput!) {
+        customerCreate(input: $input) {
+          customer { id }
+          customerUserErrors { code field message }
+        }
+      }`,
+      {
+        input: {
+          email,
+          acceptsMarketing: true,
+          password: `Nu_${Math.random().toString(36).slice(2, 14)}!`,
+        },
       }
+    );
 
+    const errors = createData?.data?.customerCreate?.customerUserErrors;
+    const alreadyExists = errors?.some(e => e.code === 'CUSTOMER_ALREADY_USED_EMAIL');
+
+    if (alreadyExists) {
+      return NextResponse.json({ success: true });
+    }
+
+    if (errors?.length > 0) {
       console.error('Shopify customerCreate errors:', errors);
       return NextResponse.json({ error: 'Could not subscribe. Please try again.' }, { status: 400 });
     }
 
+    await shopifyPost(
+      `mutation customerRecover($email: String!) {
+        customerRecover(email: $email) {
+          customerUserErrors { code field message }
+        }
+      }`,
+      { email }
+    );
+
     return NextResponse.json({ success: true });
+
   } catch (error) {
     console.error('Subscribe route error:', error);
     return NextResponse.json({ error: 'Server error. Try again.' }, { status: 500 });
