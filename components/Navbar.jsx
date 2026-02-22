@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import CartSidebar from './CartSidebar';
 import { useCart } from './CartProvider';
+import { useAccount } from './AccountProvider';
 import { searchProductsAction } from '@/app/actions';
 
 const navLinks = [
@@ -212,6 +213,34 @@ function SearchBar() {
   );
 }
 
+function AccountButton() {
+  const { customer } = useAccount();
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Link
+      href={customer ? '/account' : '/account/login'}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      title={customer ? `Signed in as ${customer.firstName}` : 'Sign in'}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        padding: '10px 16px', borderRadius: 9999,
+        background: customer ? '#7e994e' : hovered ? '#f1f5e9' : 'transparent',
+        border: customer ? 'none' : '1.5px solid #e5e7eb',
+        color: customer ? 'white' : '#7e994e',
+        fontWeight: 600, fontSize: 13,
+        textDecoration: 'none', transition: 'all 0.2s',
+      }}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+      <span>{customer ? customer.firstName : 'Sign In'}</span>
+    </Link>
+  );
+}
+
 export default function Navbar() {
   const { setIsCartOpen, cart } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -251,6 +280,7 @@ export default function Navbar() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 12 }}>
               <SearchBar />
+              <AccountButton />
               <CartButton totalQuantity={totalQuantity} onClick={() => setIsCartOpen(true)} />
             </div>
           </div>
@@ -282,9 +312,10 @@ export default function Navbar() {
               <Image src="/logo.png" alt="Urban Utensil Logo" width={320} height={110} style={{ height: 64, width: 'auto' }} />
             </Link>
 
-            {/* Right: search + cart */}
+            {/* Right: search + account + cart */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <SearchBar />
+              <AccountButton />
               <CartButton totalQuantity={totalQuantity} onClick={() => setIsCartOpen(true)} />
             </div>
           </div>
