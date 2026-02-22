@@ -1,19 +1,63 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from './CartProvider';
+import { removeFromCartAction } from '@/app/actions';
+
+function RemoveButton({ onRemove }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onRemove}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      aria-label="Remove item"
+      style={{
+        flexShrink: 0,
+        padding: '6px',
+        borderRadius: '8px',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'background 0.15s, transform 0.1s',
+        background: hovered ? '#fee2e2' : 'transparent',
+        transform: hovered ? 'scale(1.15)' : 'scale(1)',
+      }}
+    >
+      <svg
+        width="18" height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={hovered ? '#dc2626' : '#f87171'}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 6h18" />
+        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+        <path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2" />
+        <line x1="10" y1="11" x2="10" y2="17" />
+        <line x1="14" y1="11" x2="14" y2="17" />
+      </svg>
+    </button>
+  );
+}
 
 export default function CartSidebar() {
-  const { isCartOpen, setIsCartOpen, cart, updateQuantity } = useCart();
+  const { isCartOpen, setIsCartOpen, cart, setCart, updateQuantity } = useCart();
 
   const checkoutUrl = cart?.checkoutUrl || '#';
   const cartItems = cart?.lines?.edges || [];
-  
-  // Grab the subtotal directly from Shopify, default to 0 if empty
-  const subtotal = cart?.cost?.subtotalAmount?.amount 
-    ? parseFloat(cart.cost.subtotalAmount.amount).toFixed(2) 
+  const subtotal = cart?.cost?.subtotalAmount?.amount
+    ? parseFloat(cart.cost.subtotalAmount.amount).toFixed(2)
     : "0.00";
+
+  const handleRemove = async (lineId) => {
+    if (!cart?.id) return;
+    const updatedCart = await removeFromCartAction(cart.id, [lineId]);
+    setCart(updatedCart);
+  };
 
   return (
     <AnimatePresence>
@@ -21,8 +65,8 @@ export default function CartSidebar() {
         <>
           {/* Dark Overlay */}
           <motion.div
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsCartOpen(false)}
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]"
@@ -30,9 +74,9 @@ export default function CartSidebar() {
 
           {/* Sidebar Drawer */}
           <motion.div
-            initial={{ x: '100%' }} 
-            animate={{ x: 0 }} 
-            exit={{ x: '100%' }} 
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
             transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
             className="fixed top-0 right-0 h-full w-full max-w-md bg-cream shadow-2xl z-[70] flex flex-col"
           >
@@ -46,7 +90,7 @@ export default function CartSidebar() {
               </button>
             </div>
 
-            {/* Cart Items Area */}
+            {/* Cart Items */}
             <div className="flex-1 p-6 overflow-y-auto flex flex-col gap-6">
               {cartItems.length > 0 ? (
                 cartItems.map((item, index) => {
@@ -56,35 +100,40 @@ export default function CartSidebar() {
                   const imageUrl = lineItem.merchandise.image?.url;
 
                   return (
-                    <motion.div 
+                    <motion.div
                       key={lineItem.id}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
                       transition={{ delay: index * 0.1, ease: "easeOut" }}
                       className="flex gap-4 items-center bg-white p-4 rounded-2xl shadow-sm border border-matcha-light/50"
                     >
-                      {/* Item Image */}
+                      {/* Image */}
                       <div className="relative w-20 h-20 bg-matcha-light rounded-xl flex-shrink-0 overflow-hidden">
                         {imageUrl && (
                           <Image src={imageUrl} alt={productTitle} fill className="object-contain p-2" />
                         )}
                       </div>
-                      
-                      {/* Item Details */}
+
+                      {/* Details */}
                       <div className="flex-1 text-left">
-                        <h3 className="font-bold text-gray-800 text-sm leading-tight">{productTitle}</h3>
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="font-bold text-gray-800 text-sm leading-tight">{productTitle}</h3>
+                          {/* Remove button */}
+                          <RemoveButton onRemove={() => handleRemove(lineItem.id)} />
+                        </div>
                         <p className="text-matcha-dark font-semibold mt-1">${price}</p>
                         <div className="flex items-center gap-3 mt-3">
-                          <button 
+                          <button
                             onClick={() => updateQuantity(lineItem.id, lineItem.quantity - 1)}
-                            className="w-8 h-8 rounded-full border border-matcha-dark text-matcha-dark hover:bg-matcha-light"
+                            className="w-8 h-8 rounded-full border border-matcha-dark text-matcha-dark hover:bg-matcha-light transition-colors"
                           >
                             -
                           </button>
                           <span className="font-bold">{lineItem.quantity}</span>
-                          <button 
+                          <button
                             onClick={() => updateQuantity(lineItem.id, lineItem.quantity + 1)}
-                            className="w-8 h-8 rounded-full border border-matcha-dark text-matcha-dark hover:bg-matcha-light"
+                            className="w-8 h-8 rounded-full border border-matcha-dark text-matcha-dark hover:bg-matcha-light transition-colors"
                           >
                             +
                           </button>
@@ -96,7 +145,7 @@ export default function CartSidebar() {
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <div className="w-24 h-24 bg-matcha-light rounded-full flex items-center justify-center mb-6">
-                     <span className="text-3xl">🛒</span>
+                    <span className="text-3xl">🛒</span>
                   </div>
                   <p className="text-lg font-medium text-gray-700">Your cart is looking a little empty.</p>
                 </div>
@@ -109,11 +158,11 @@ export default function CartSidebar() {
                 <span>Subtotal</span>
                 <span>${subtotal}</span>
               </div>
-              <a 
+              <a
                 href={checkoutUrl}
                 className={`block w-full text-center font-bold py-4 rounded-xl shadow-md transition-colors active:scale-[0.98]
-                  ${cartItems.length > 0 
-                    ? 'bg-matcha-dark text-white hover:bg-gray-900' 
+                  ${cartItems.length > 0
+                    ? 'bg-matcha-dark text-white hover:bg-gray-900'
                     : 'bg-gray-300 text-gray-500 pointer-events-none'
                   }`}
               >

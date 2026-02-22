@@ -4,12 +4,41 @@ import { getProduct } from '@/lib/shopify';
 import { notFound } from 'next/navigation';
 import AddToCartButton from '@/components/AddToCartButton';
 
-export default async function ProductPage({ params }) {
-  // NEXT.js 15 FIX: You MUST await params before using them
-  const { handle } = await params; 
-  
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+export async function generateMetadata({ params }) {
+  const { handle } = await params;
   const product = await getProduct(handle);
-  
+  if (!product) return {};
+
+  const title = `${product.title} | Urban Utensil`;
+  const description = product.descriptionHtml?.replace(/<[^>]*>/g, '').slice(0, 160) || 'Premium kitchen tools for modern spaces.';
+  const imageUrl = product.images.edges[0]?.node?.url;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}/product/${handle}`,
+      siteName: 'Urban Utensil',
+      images: imageUrl ? [{ url: imageUrl, width: 800, height: 800, alt: product.title }] : [],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : [],
+    },
+  };
+}
+
+export default async function ProductPage({ params }) {
+  const { handle } = await params;
+  const product = await getProduct(handle);
+
   if (!product) return notFound();
 
   const title = product.title;
@@ -22,12 +51,7 @@ export default async function ProductPage({ params }) {
     <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12 mt-10">
       <div className="relative h-[60vh] md:h-[80vh] w-full bg-matcha-light rounded-3xl overflow-hidden shadow-sm">
         {imageUrl ? (
-          <Image 
-            src={imageUrl} 
-            alt={title} 
-            fill 
-            className="object-cover p-8" 
-          />
+          <Image src={imageUrl} alt={title} fill className="object-cover p-8" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
         )}
@@ -36,14 +60,8 @@ export default async function ProductPage({ params }) {
       <div className="flex flex-col justify-center">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">{title}</h1>
         <p className="text-2xl text-matcha-dark font-medium mb-8">${price}</p>
-        
-        <div 
-          className="prose prose-matcha text-gray-600 mb-10 leading-relaxed" 
-          dangerouslySetInnerHTML={{ __html: descriptionHtml }} 
-        />
-
+        <div className="prose prose-matcha text-gray-600 mb-10 leading-relaxed" dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
         <AddToCartButton variantId={variantId} price={price} />
-
         <div className="mt-6 flex items-center justify-center gap-4 text-sm text-gray-500 font-medium">
           <span>✨ Free shipping over $50</span>
           <span>•</span>

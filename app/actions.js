@@ -1,8 +1,12 @@
 'use server';
-import { createCartAndAdd, updateCartQuantity, removeFromCart } from '@/lib/shopify';
+import { createCartAndAdd, updateCartQuantity, removeFromCart, getCart, searchProducts, getProductsWithTypes } from '@/lib/shopify';
 
-export async function addToCartAction(variantId, cartId) {
-  return await createCartAndAdd(variantId, cartId);
+export async function getCartAction(cartId) {
+  return await getCart(cartId);
+}
+
+export async function addToCartAction(variantId) {
+  return await createCartAndAdd(variantId);
 }
 
 export async function updateQuantityAction(cartId, lineId, quantity) {
@@ -12,8 +16,12 @@ export async function updateQuantityAction(cartId, lineId, quantity) {
 export async function removeFromCartAction(cartId, lineIds) {
   return await removeFromCart(cartId, lineIds);
 }
-// Add this to the bottom of app/actions.js
-export async function subscribeEmailAction(email) {
-  const { subscribeToNewsletter } = await import('@/lib/shopify');
-  return await subscribeToNewsletter(email);
+
+export async function searchProductsAction(query) {
+  if (!query || query.trim().length < 2) return [];
+  return await searchProducts(query);
+}
+
+export async function getProductsWithTypesAction() {
+  return await getProductsWithTypes();
 }

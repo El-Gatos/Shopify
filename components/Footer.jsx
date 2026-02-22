@@ -72,10 +72,12 @@ export default function Footer() {
     { href: '/support', label: 'Orders & Support' },
   ];
 
+  // ✏️ FILL IN YOUR HANDLES BELOW
+  // To remove a platform entirely, just delete its line
   const socials = [
-    { href: 'https://instagram.com', label: 'Instagram', Icon: InstagramIcon },
-    { href: 'https://tiktok.com', label: 'TikTok', Icon: TikTokIcon },
-    { href: 'https://pinterest.com', label: 'Pinterest', Icon: PinterestIcon },
+    { href: 'https://instagram.com/YOUR_HANDLE', label: 'Instagram', Icon: InstagramIcon },
+    { href: 'https://tiktok.com/@YOUR_HANDLE', label: 'TikTok', Icon: TikTokIcon },
+    { href: 'https://pinterest.com/YOUR_HANDLE', label: 'Pinterest', Icon: PinterestIcon },
   ];
 
   return (
