@@ -12,3 +12,8 @@ export async function updateQuantityAction(cartId, lineId, quantity) {
 export async function removeFromCartAction(cartId, lineIds) {
   return await removeFromCart(cartId, lineIds);
 }
+// Add this to the bottom of app/actions.js
+export async function subscribeEmailAction(email) {
+  const { subscribeToNewsletter } = await import('@/lib/shopify');
+  return await subscribeToNewsletter(email);
+}
