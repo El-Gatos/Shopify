@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import { CartProvider } from '../components/CartProvider';
 import { AccountProvider } from '../components/AccountProvider';
 import FlyingItem from '@/components/FlyingItem';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
             </main>
             <Footer />
           </CartProvider>
+          <Analytics />
         </AccountProvider>
       </body>
     </html>
